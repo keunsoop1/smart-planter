@@ -1,18 +1,19 @@
-#include <dht.h>    // dht lib
+#include <DHT.h>    // dht lib
+#define DHTTYPE DHT11
+#define DHT11_PIN A1 // 온습도 센서를 A1 핀으로 설정
 
-dht DHT;    // initialise dht sensor
-
-#define DHT11_PIN 7
-
+DHT dht(DHT11_PIN,DHTTYPE);
+int h = dht.readHumidity();
+int t = dht.readTemperature();
 int soilValue = 0;    // 토양 수분값 0으로 설정
 int soilPin = A0;        // 토양 센서를 A0 핀으로 설정 
 int chk;
 float temp;
 float hum;
 int ldrValue;
-int redLEDPin = 13;     // 물에 빨간색 led 13번 핀으로 설정 (water)
+int redLEDPin = 11;     // 물에 빨간색 led 11번 핀으로 설정 (water)
 int yellowLEDPin = 12;  // ldr 에 빨간색 led 12번 핀으로 설정 (ldr)
-int ldrPin = A1;        // ldr 을 A1 핀으로 설정
+int ldrPin = A6;        // ldr 을 A6 핀으로 설정 CDS ()
 int motorPin = 3;       // 모터 핀을 3번 핀으로 설정
 /* 'A': auto
    'M': manual
@@ -39,9 +40,9 @@ void loop() {
     status = Serial.read();
   }
   
-  chk = DHT.read11(DHT11_PIN);
-  temp = DHT.temperature;
-  hum = DHT.humidity;  
+  chk = dht.read(DHT11_PIN);
+  temp = dht.readTemperature();
+  hum = dht.readHumidity();  
   soilValue = analogRead(soilPin);
   ldrValue = analogRead(ldrPin);
   
@@ -82,11 +83,10 @@ void loop() {
     analogWrite (motorPin, LOW);
   }
   
-  if (ldrValue> = 300) {
+  if (ldrValue > 300) {
     digitalWrite (yellowLEDPin, HIGH);
   } else {
     digitalWrite (yellowLEDPin, LOW);
   }
-  지연 (4000);
+  delay (4000);
 }
-
